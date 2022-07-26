@@ -57,7 +57,7 @@ router.get('/note/:id', async (req, res) => {
             id: id
         }
     })
-    if (findNote < 0) {
+    if (findNote === null) {
         res.status(404).render('404.ejs')
         return
     }
