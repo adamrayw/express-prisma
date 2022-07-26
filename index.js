@@ -24,6 +24,6 @@ app.get('/addnote', noteRouter)
 
 app.use(express.static('public'))
 
-app.listen(8080, () => {
+app.listen(process.env.PORT || 8080, () => {
     console.log('Server connected on http://localhost:8080')
 })
