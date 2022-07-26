@@ -1,5 +1,6 @@
 const { Pool } = require('pg')
 
+// Local
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
@@ -7,5 +8,8 @@ const pool = new Pool({
     password: 'root',
     port: 5432
 })
+
+// Production
+
 
 module.exports = pool
