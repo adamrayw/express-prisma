@@ -1,0 +1,138 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    max-width: 748px;
+    margin: auto;
+    padding: 40px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin: 1em 0;
+    border: 1px solid #f2f2f2;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+li h1 {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.date {
+    margin-top: .4em;
+    margin-bottom: 1em;
+}
+
+p {
+    letter-spacing: 1px;
+    line-height: 26px;
+}
+
+a {
+    display: block;
+    text-align: right;
+    padding-top: 10px;
+}
+
+form {
+    padding-top: 20px;
+}
+
+form > div {
+    margin-top: 20px;
+}
+
+input {
+    width: 100%;
+    border: 0;
+    padding: 10px 10px 10px 0;
+    font-size: 2em;
+    font-weight: bold;
+    transition: .3s ease all;
+}
+
+input:focus {
+    border: none;
+    outline: none;
+}
+
+input:hover::-webkit-input-placeholder {
+    color: rgb(0, 0, 0);
+}
+
+
+textarea:hover::-webkit-input-placeholder {
+    color: rgb(0, 0, 0);
+}
+
+textarea {
+    width: 100%;
+    border: none;
+    padding: 10px 10px 10px 0;
+    font-size: 1.6em;
+    font-weight: normal;
+    transition: .3s ease all;
+}
+
+textarea:focus {
+    border: none;
+    outline: none;
+}
+
+button {
+    border: 0;
+    background-color: black;
+    color: white;
+    padding: 10px 12px;
+    border-radius: 10px;
+    transition: .2s ease-in-out;
+    font-size: 1em;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: rgb(60, 60, 60);
+}
+
+small {
+    color: red;
+}
+
+.home {
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.home h1 {
+    margin-bottom: 10px;
+    font-size: 4em;
+}
+
+.home a {
+    display: inline-block;
+    background: #000000;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: white;
+    transition: .3s ease;
+    margin-top: 50px;
+    font-weight: bold;
+}
+
+.home a:hover {
+    background: #3f3f3f;
+    padding: 16px 18px;
+}
