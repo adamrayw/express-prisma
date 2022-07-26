@@ -101,14 +101,16 @@ router.post('/notes', async (req, res) => {
 
 // Delete note
 router.post('/note/:id/delete', async (req, res) => {
-    const id = +req.params.id
+    const id = req.params.id
 
     try {
-        await note.destroy({
+        await prisma.note.delete({
             where: {
                 id: id
             }
         })
+
+        await prisma.$disconnect()
         res.redirect('/notes')
     } catch (error) {
         throw error
