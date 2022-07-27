@@ -12,8 +12,14 @@
     <h1><%= findNote.title %></h1>
     <p class="date"><%= new Date(findNote.createdAt).toDateString() %></p>
     <p><%= findNote.content %></p>
-    <form action="/note/<%= findNote.id %>/delete" method="POST">
-      <button type="submit">Delete Note</button>
-    </form>
+    <div class="edit-delete">
+      <a href="/note/<%= findNote.id %>/edit "
+        ><img src="https://img.icons8.com/fluency/28/000000/edit.png" />Edit
+        Note</a
+      >
+      <form action="/note/<%= findNote.id %>/delete" method="POST">
+        <button type="submit">Delete Note</button>
+      </form>
+    </div>
   </body>
 </html>
