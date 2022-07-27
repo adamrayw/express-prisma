@@ -42,30 +42,34 @@ router.get('/', (req, res) => {
 router.get('/notes', async (req, res) => {
     // await client.connect()
     // const value = await client.get('notes')
-    if (value) {
-        const values = JSON.parse(value)
-        // res.json(values)
+    // if (value) {
+    //     const values = JSON.parse(value)
+    //     // res.json(values)
 
-        if (values.length < 2) {
-            const parsed = JSON.parse(value)
-            res.render('notes.ejs', { notes: parsed })
+    //     if (values.length < 2) {
+    //         const parsed = JSON.parse(value)
+    //         res.render('notes.ejs', { notes: parsed, user: req.user })
+    //     }
+
+    //     const parsed = JSON.parse(value)
+    //     res.render('notes.ejs', { notes: parsed })
+    // }
+    try {
+        const getAllNotes = await prisma.note.findMany()
+
+        // await client.set('notes', JSON.stringify(getAllNotes))
+
+        if (!req.user === 0) {
+            res.redirect('/login')
+        } else {
+            res.render('notes.ejs', { notes: getAllNotes, user: req.user.username })
         }
 
-        const parsed = JSON.parse(value)
-        res.render('notes.ejs', { notes: parsed })
-    } else {
-        try {
-            const getAllNotes = await prisma.note.findMany()
-
-            // await client.set('notes', JSON.stringify(getAllNotes))
-
-            res.render('notes.ejs', { notes: getAllNotes })
-        } catch (e) {
-            throw e
-        }
-
-        await prisma.$disconnect()
+    } catch (e) {
+        throw e
     }
+
+    await prisma.$disconnect()
 
     // await client.disconnect()
 })
