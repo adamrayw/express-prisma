@@ -55,16 +55,13 @@ router.get('/notes', async (req, res) => {
     //     res.render('notes.ejs', { notes: parsed })
     // }
     try {
-        const getAllNotes = await prisma.note.findMany()
-
-        // await client.set('notes', JSON.stringify(getAllNotes))
-
-        if (!req.user === 0) {
-            res.redirect('/login')
-        } else {
+        if (req.session.passport) {
+            const getAllNotes = await prisma.note.findMany()
+            // await client.set('notes', JSON.stringify(getAllNotes))
             res.render('notes.ejs', { notes: getAllNotes, user: req.user.username })
+        } else {
+            res.redirect('/login')
         }
-
     } catch (e) {
         throw e
     }
