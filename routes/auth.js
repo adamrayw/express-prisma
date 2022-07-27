@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt')
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
     const checkUser = await prisma.user.findUnique({
         where: {
-            email: username
+            username: username
         }
     })
 
