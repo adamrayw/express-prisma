@@ -34,7 +34,9 @@ app.get('/addnote', noteRouter)
 
 // auth route
 app.get('/login', authRouter)
+app.get('/register', authRouter)
 app.post('/login/password', authRouter)
+app.post('/register', authRouter)
 app.post('/logout', authRouter)
 
 app.use(express.static('public'))
