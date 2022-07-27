@@ -19,6 +19,8 @@ app.get('/', noteRouter)
 app.get('/notes', noteRouter)
 app.post('/notes', noteRouter)
 app.get('/note/:id', noteRouter)
+app.get('/note/:id/edit', noteRouter)
+app.post('/note/:id/edit', noteRouter)
 app.post('/note/:id/delete', noteRouter)
 app.get('/addnote', noteRouter)
 
