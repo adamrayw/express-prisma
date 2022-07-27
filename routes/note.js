@@ -99,6 +99,52 @@ router.post('/notes', async (req, res) => {
 
 })
 
+// Edit/Update note
+router.get('/note/:id/edit', async (req, res) => {
+    const id = req.params.id
+
+    try {
+        const getNote = await prisma.note.findUnique({
+            where: {
+                id: id
+            }
+        })
+
+        await prisma.$disconnect()
+        res.render('updateNote.ejs', { note: getNote })
+    } catch (error) {
+
+    }
+
+})
+
+router.post('/note/:id/edit', async (req, res) => {
+    const id = req.params.id
+    const title = req.body.title
+    const content = req.body.content
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var updatedAt = (new Date(Date.now() - tzoffset)).toISOString()
+
+    try {
+        await prisma.note.update({
+            where: {
+                id: id
+            },
+            data: {
+                title: title,
+                content: content,
+                updatedAt: updatedAt
+            }
+        })
+
+        await prisma.$disconnect()
+        res.redirect(`/note/${id}`)
+    } catch (error) {
+        throw error
+    }
+
+})
+
 // Delete note
 router.post('/note/:id/delete', async (req, res) => {
     const id = req.params.id
