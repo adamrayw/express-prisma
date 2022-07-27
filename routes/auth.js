@@ -2,9 +2,11 @@ const express = require('express');
 const passport = require('passport');
 const LocalStrategy = require('passport-local')
 const crypto = require('crypto')
-const { PrismaClient } = require('@prisma/client')
+const { PrismaClient } = require('@prisma/client');
+const { route } = require('./note');
 const router = express.Router()
 const prisma = new PrismaClient()
+const bcrypt = require('bcrypt')
 
 passport.use(new LocalStrategy(async function verify(username, password, cb) {
     const checkUser = await prisma.user.findUnique({
@@ -14,28 +16,18 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
     })
 
     if (!checkUser) {
-        return cb(err)
-    }
-
-    if (!checkUser) {
         return cb(null, false, {
             message: 'Incorrect username or password.'
         })
     }
 
-    crypto.pbkdf2(password, checkUser.password, 310000, 32, 'sha512', function (err, hashedPassword) {
-        if (err) {
-            return cb(err)
-        }
+    if (!bcrypt.compare(checkUser.password, password)) {
+        return cb(null, false, {
+            message: 'Incorrect username or password'
+        })
+    }
 
-        // if (!crypto.timingSafeEqual(checkUser.password, hashedPassword)) {
-        //     return cb(null, false, {
-        //         message: 'Incorrect username or password'
-        //     })
-        // }
-
-        return cb(null, checkUser)
-    })
+    return cb(null, checkUser)
 }))
 
 passport.serializeUser(function (user, cb) {
@@ -50,6 +42,7 @@ passport.deserializeUser(function (user, cb) {
     });
 });
 
+// LOGIN
 
 router.get('/login', (req, res, next) => {
     res.render('./auth/login')
@@ -66,5 +59,31 @@ router.post('/logout', function (req, res, next) {
         res.redirect('/');
     });
 });
+
+// REGISTER
+
+router.get('/register', (req, res) => {
+    res.render('./auth/register')
+})
+
+router.post('/register', async (req, res) => {
+    const username = req.body.username
+    const email = req.body.email
+    const password = await bcrypt.hash(req.body.password, 10);
+
+    try {
+        await prisma.user.create({
+            data: {
+                username: username,
+                email: email,
+                password: password
+            }
+        })
+
+        res.redirect('/login')
+    } catch (error) {
+        throw error
+    }
+})
 
 module.exports = router
