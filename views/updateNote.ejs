@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
+    <title>Edit Note</title>
+  </head>
+  <body>
+    <a
+      href="/note/<%= note.id %> "
+      style="text-align: left; margin-bottom: 20px"
+      >👈🏻 Back</a
+    >
+    <h1>Edit Note</h1>
+    <div class="form-container">
+      <form action="/note/<%= note.id %>/edit" method="POST">
+        <div>
+          <label for="title">
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              value="<%= note.title %>"
+              autofocus
+            />
+          </label>
+          <br />
+        </div>
+        <div>
+          <label for="content">
+            <textarea
+              type="text"
+              name="content"
+              placeholder="Content"
+              rows="10"
+            >
+<%= note.content %></textarea
+            >
+          </label>
+        </div>
+        <div>
+          <button type="submit">Edit Note</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
