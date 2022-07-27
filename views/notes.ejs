@@ -15,7 +15,7 @@
       <% notes.map(e=> { %>
       <li>
         <h1><%= e.title %></h1>
-        <p class="date"><%= e.createdAt.toDateString() %></p>
+        <p class="date"><%= new Date(e.createdAt).toDateString() %></p>
         <p><%= e.content %>...</p>
         <a href="/note/<%= e.id %> ">View Note</a>
       </li>

@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../config/db')
 const Joi = require('joi')
+const { createClient } = require('redis');
+
+const client = createClient()
 
 // ORM
 const { PrismaClient } = require('@prisma/client')
@@ -9,8 +12,7 @@ const prisma = new PrismaClient()
 
 async function getAllNotes() {
 
-
-    console.log(notes)
+    const notes = await prisma.note.findMany()
     return notes
 }
 
@@ -37,14 +39,34 @@ router.get('/', (req, res) => {
 
 // Get All
 router.get('/notes', async (req, res) => {
-    try {
-        const getAllNotes = await prisma.note.findMany()
-        res.render('notes.ejs', { notes: getAllNotes })
-    } catch (e) {
-        throw e
+    await client.connect()
+    const value = await client.get('notes')
+    if (value) {
+        const values = JSON.parse(value)
+        // res.json(values)
+
+        if (values.length < 2) {
+            const parsed = JSON.parse(value)
+            res.render('notes.ejs', { notes: parsed })
+        }
+
+        const parsed = JSON.parse(value)
+        res.render('notes.ejs', { notes: parsed })
+    } else {
+        try {
+            const getAllNotes = await prisma.note.findMany()
+
+            await client.set('notes', JSON.stringify(getAllNotes))
+
+            res.render('notes.ejs', { notes: getAllNotes })
+        } catch (e) {
+            throw e
+        }
+
+        await prisma.$disconnect()
     }
 
-    await prisma.$disconnect()
+    await client.disconnect()
 })
 
 // Get by id
@@ -72,6 +94,7 @@ router.get('/addnote', (req, res) => {
 })
 
 router.post('/notes', async (req, res) => {
+    await client.connect()
     const title = req.body.title
     const content = req.body.content
 
@@ -84,6 +107,8 @@ router.post('/notes', async (req, res) => {
                     content: content
                 }
             })
+            const getNotes = await getAllNotes()
+            await client.set('notes', JSON.stringify(getNotes))
             await prisma.$disconnect()
             res.status(201).redirect('/notes')
         } else {
@@ -96,6 +121,8 @@ router.post('/notes', async (req, res) => {
     } catch (e) {
         console.log(e)
     }
+
+    await client.disconnect()
 
 })
 
@@ -119,6 +146,7 @@ router.get('/note/:id/edit', async (req, res) => {
 })
 
 router.post('/note/:id/edit', async (req, res) => {
+    await client.connect()
     const id = req.params.id
     const title = req.body.title
     const content = req.body.content
@@ -126,7 +154,7 @@ router.post('/note/:id/edit', async (req, res) => {
     var updatedAt = (new Date(Date.now() - tzoffset)).toISOString()
 
     try {
-        await prisma.note.update({
+        const data = await prisma.note.update({
             where: {
                 id: id
             },
@@ -137,16 +165,21 @@ router.post('/note/:id/edit', async (req, res) => {
             }
         })
 
+        // get all notes again and set to redis
+        const wd = await getAllNotes()
+        await client.set('notes', JSON.stringify(wd))
         await prisma.$disconnect()
         res.redirect(`/note/${id}`)
     } catch (error) {
         throw error
     }
 
+    await client.disconnect()
 })
 
 // Delete note
 router.post('/note/:id/delete', async (req, res) => {
+    await client.connect()
     const id = req.params.id
 
     try {
@@ -155,12 +188,15 @@ router.post('/note/:id/delete', async (req, res) => {
                 id: id
             }
         })
-
+        const getNotes = await getAllNotes()
+        await client.set('notes', JSON.stringify(getNotes))
         await prisma.$disconnect()
         res.redirect('/notes')
     } catch (error) {
         throw error
     }
+
+    await client.disconnect()
 })
 
 module.exports = router
