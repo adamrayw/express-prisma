@@ -9,8 +9,11 @@
   </head>
 
   <body>
-    <h1>Notes</h1>
+    <h1>Hi, <%= user %></h1>
     <a style="text-align: left" href="/addnote">Add Note</a>
+    <form action="/logout" method="POST">
+      <button type="submit">logout</button>
+    </form>
     <ul>
       <% notes.map(e=> { %>
       <li>
