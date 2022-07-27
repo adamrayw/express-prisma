@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const pool = require('./config/db')
 const noteRouter = require('./routes/note');
+const authRouter = require('./routes/auth');
 const flash = require('connect-flash')
 const session = require('express-session')
 
@@ -23,6 +24,10 @@ app.get('/note/:id/edit', noteRouter)
 app.post('/note/:id/edit', noteRouter)
 app.post('/note/:id/delete', noteRouter)
 app.get('/addnote', noteRouter)
+
+// auth route
+app.get('/login', authRouter)
+app.post('/login/password', authRouter)
 
 app.use(express.static('public'))
 
