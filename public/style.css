@@ -47,7 +47,7 @@ form {
     padding-top: 20px;
 }
 
-form > div {
+form>div {
     margin-top: 20px;
 }
 
@@ -105,6 +105,29 @@ button:hover {
 
 small {
     color: red;
+}
+
+.edit-delete {
+    margin-top: 4em;
+    display: flex;
+    align-items: center;
+}
+
+.edit-delete a {
+    margin-right: 10px;
+    text-decoration: none;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    color: #000;
+}
+
+.edit-delete a>img {
+    margin-right: 4px;
+}
+
+.edit-delete form {
+    padding: 0;
 }
 
 .home {
