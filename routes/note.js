@@ -9,7 +9,6 @@ const Joi = require('joi')
 // ORM
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const value = false
 
 // async function getAllNotes() {
 
@@ -56,9 +55,17 @@ router.get('/notes', async (req, res) => {
     // }
     try {
         if (req.session.passport) {
-            const getAllNotes = await prisma.note.findMany()
+            const getAllNotes = await prisma.user.findUnique({
+                where: {
+                    id: req.user.id
+                },
+                include: {
+                    notes: true
+                }
+            })
             // await client.set('notes', JSON.stringify(getAllNotes))
-            res.render('notes.ejs', { notes: getAllNotes, user: req.user.username })
+            // res.json(getAllNotes)
+            res.render('notes.ejs', { notes: getAllNotes.notes, user: req.user.username })
         } else {
             res.redirect('/login')
         }
