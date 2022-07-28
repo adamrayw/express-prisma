@@ -104,6 +104,7 @@ router.get('/addnote', (req, res) => {
 
 router.post('/notes', async (req, res) => {
     // await client.connect()
+    const userId = req.user.id
     const title = req.body.title
     const content = req.body.content
 
@@ -113,7 +114,8 @@ router.post('/notes', async (req, res) => {
             await prisma.note.create({
                 data: {
                     title: title,
-                    content: content
+                    content: content,
+                    userId: userId
                 }
             })
             // const getNotes = await getAllNotes()
