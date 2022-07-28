@@ -9,11 +9,27 @@
   </head>
 
   <body>
-    <h1>Hi, <%= user %></h1>
-    <a style="text-align: left" href="/addnote">Add Note</a>
-    <form action="/logout" method="POST">
-      <button type="submit">logout</button>
-    </form>
+    <div class="header-note">
+      <h1>Hi, <%= user %></h1>
+      <form action="/logout" method="POST" style="padding: 0">
+        <button type="submit" style="font-size: 0.8em">logout</button>
+      </form>
+    </div>
+    <a
+      style="
+        text-align: left;
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: black;
+      "
+      href="/addnote"
+      ><img
+        style="margin-right: 6px"
+        src="https://img.icons8.com/material-outlined/24/000000/note.png"
+      />
+      Add Note</a
+    >
     <ul>
       <% notes.map(e=> { %>
       <li>
@@ -25,7 +41,18 @@
       <% }) %>
     </ul>
     <% if (notes.length === 0) { %>
-    <p style="text-align: center; margin-top: 20px">Note Empty</p>
+    <p
+      style="
+        text-align: center;
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 400px;
+      "
+    >
+      Note Empty
+    </p>
     <% } %>
   </body>
 </html>
