@@ -80,26 +80,34 @@ router.get('/notes', async (req, res) => {
 
 // Get by id
 router.get('/note/:id', async (req, res) => {
-    const id = req.params.id
+    if (req.session.passport) {
+        const id = req.params.id
 
-    // const findNote = await pool.query(`SELECT * FROM notes WHERE id=${id}`)
-    const findNote = await prisma.note.findUnique({
-        where: {
-            id: id
+        // const findNote = await pool.query(`SELECT * FROM notes WHERE id=${id}`)
+        const findNote = await prisma.note.findUnique({
+            where: {
+                id: id
+            }
+        })
+        if (findNote === null) {
+            res.status(404).render('404.ejs')
+            return
         }
-    })
-    if (findNote === null) {
-        res.status(404).render('404.ejs')
-        return
+        await prisma.$disconnect()
+        res.render("note.ejs", { findNote })
+    } else {
+        res.redirect('/login')
     }
-    await prisma.$disconnect()
-    res.render("note.ejs", { findNote })
+
 })
 
 // Post note
 router.get('/addnote', (req, res) => {
-
-    res.render('addNote.ejs', { msg: req.flash('info') })
+    if (req.session.passport) {
+        res.render('addNote.ejs', { msg: req.flash('info') })
+    } else {
+        res.redirect('/login')
+    }
 })
 
 router.post('/notes', async (req, res) => {
@@ -139,50 +147,58 @@ router.post('/notes', async (req, res) => {
 
 // Edit/Update note
 router.get('/note/:id/edit', async (req, res) => {
-    const id = req.params.id
+    if (req.session.passport) {
+        const id = req.params.id
 
-    try {
-        const getNote = await prisma.note.findUnique({
-            where: {
-                id: id
-            }
-        })
+        try {
+            const getNote = await prisma.note.findUnique({
+                where: {
+                    id: id
+                }
+            })
 
-        await prisma.$disconnect()
-        res.render('updateNote.ejs', { note: getNote })
-    } catch (error) {
-
+            await prisma.$disconnect()
+            res.render('updateNote.ejs', { note: getNote })
+        } catch (error) {
+            throw error
+        }
+    } else {
+        res.redirect('/login')
     }
-
 })
 
 router.post('/note/:id/edit', async (req, res) => {
     // await client.connect()
-    const id = req.params.id
-    const title = req.body.title
-    const content = req.body.content
-    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-    var updatedAt = (new Date(Date.now() - tzoffset)).toISOString()
+    if (req.session.passport) {
 
-    try {
-        const data = await prisma.note.update({
-            where: {
-                id: id
-            },
-            data: {
-                title: title,
-                content: content,
-                updatedAt: updatedAt
-            }
-        })
+        const id = req.params.id
+        const title = req.body.title
+        const content = req.body.content
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        var updatedAt = (new Date(Date.now() - tzoffset)).toISOString()
 
-        // get all notes again and set to redis
-        // const wd = await getAllNotes()
-        // await client.set('notes', JSON.stringify(wd))
-        await prisma.$disconnect()
-        res.redirect(`/note/${id}`)
-    } catch (error) {
-        throw error
+        try {
+            const data = await prisma.note.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    title: title,
+                    content: content,
+                    updatedAt: updatedAt
+                }
+            })
+
+            // get all notes again and set to redis
+            // const wd = await getAllNotes()
+            // await client.set('notes', JSON.stringify(wd))
+            await prisma.$disconnect()
+            res.redirect(`/note/${id}`)
+        } catch (error) {
+            throw error
+        }
+    } else {
+        res.redirect('/login')
     }
 
     // await client.disconnect()
@@ -191,20 +207,24 @@ router.post('/note/:id/edit', async (req, res) => {
 // Delete note
 router.post('/note/:id/delete', async (req, res) => {
     // await client.connect()
-    const id = req.params.id
+    if (req.session.passport) {
+        const id = req.params.id
 
-    try {
-        await prisma.note.delete({
-            where: {
-                id: id
-            }
-        })
-        // const getNotes = await getAllNotes()
-        // await client.set('notes', JSON.stringify(getNotes))
-        // await prisma.$disconnect()
-        res.redirect('/notes')
-    } catch (error) {
-        throw error
+        try {
+            await prisma.note.delete({
+                where: {
+                    id: id
+                }
+            })
+            // const getNotes = await getAllNotes()
+            // await client.set('notes', JSON.stringify(getNotes))
+            // await prisma.$disconnect()
+            res.redirect('/notes')
+        } catch (error) {
+            throw error
+        }
+    } else {
+        res.redirect('/login')
     }
 
     // await client.disconnect()
